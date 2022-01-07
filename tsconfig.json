@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    //  local que os arquisov js serão armazenados após compilação
+    "outDir": "dist", 
+     // permite utilizar o import e export
+    "module": "commonjs",
+     // define a versao do javascript que o código será convertido
+    "target": "2019",
+     // Modulos que utilizam require ser importados
+    "esModuleInterop": true,
+    // permite arquivos de configuração js
+    "allowJs": true 
+  }
+}
