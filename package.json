@@ -3,5 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "Mairon Vilela <maironvilela@hotmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.2.8"
+  }
 }
