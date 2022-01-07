@@ -4,10 +4,17 @@
   "main": "index.js",
   "author": "Mairon Vilela <maironvilela@hotmail.com>",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.0.1",
+    "eslint": "^7.12.1",
+    "eslint-config-standard-with-typescript": "^21.0.1",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.0.0"
+  },
   "devDependencies": {
     "@types/node": "^17.0.8",
     "git-commit-msg-linter": "^3.2.8",
-    "typescript": "^4.5.4"
+    "typescript": "*"
   }
 }
