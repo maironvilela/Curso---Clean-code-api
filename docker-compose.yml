@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:
+  mongo:
+    image: mongo:4.2
+    container_name: mongo
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_DATABASE: clean-node-api
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: 123
+

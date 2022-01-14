@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1642014542257" clover="3.2.0">
-  <project timestamp="1642014542258" name="All files">
+<coverage generated="1642191200017" clover="3.2.0">
+  <project timestamp="1642191200017" name="All files">
     <metrics statements="82" coveredstatements="70" conditionals="8" coveredconditionals="6" methods="19" coveredmethods="18" elements="109" coveredelements="94" complexity="0" loc="82" ncloc="82" packages="10" files="17" classes="17"/>
     <package name="data.usecases.add-account">
       <metrics statements="9" coveredstatements="6" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
@@ -59,11 +59,11 @@
       <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
       <file name="mongo-helpers.ts" path="/home/mairon/projetos/clean-node-api/src/infra/db/mongodb/helpers/mongo-helpers.ts">
         <metrics statements="5" coveredstatements="5" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
-        <line num="1" count="1" type="stmt"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="7" count="1" type="stmt"/>
-        <line num="11" count="1" type="stmt"/>
-        <line num="14" count="3" type="stmt"/>
+        <line num="1" count="2" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="7" count="2" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+        <line num="14" count="4" type="stmt"/>
       </file>
     </package>
     <package name="infra.errors">
