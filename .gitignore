@@ -1,3 +1,6 @@
+coverage
+./coverage
 node_modules
 dist
 .env
+

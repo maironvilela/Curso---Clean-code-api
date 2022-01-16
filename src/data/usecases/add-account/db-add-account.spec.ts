@@ -22,7 +22,7 @@ const makeEncrypterStub = (): Encrypter => {
 
 const makeAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async save(accountData: AddAccountModel): Promise<AccountModel> {
+    async add(accountData: AddAccountModel): Promise<AccountModel> {
       return await new Promise(resolve =>
         resolve(
           Object.assign({}, accountData, {
@@ -116,7 +116,7 @@ describe('Add Account', () => {
     };
 
     jest
-      .spyOn(addAccountRepositoryStub, 'save')
+      .spyOn(addAccountRepositoryStub, 'add')
       .mockReturnValueOnce(
         new Promise((resolve, reject) => reject(new Error())),
       );

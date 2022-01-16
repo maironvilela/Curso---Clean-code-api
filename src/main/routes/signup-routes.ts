@@ -1,9 +1,7 @@
 import { Router } from 'express';
+import { makeSignUpController } from '../factories/signup';
+import { expressRouterAdapter } from '../adapters/express-router-adapter';
 
 export default (router: Router): void => {
-  router.post('/signup', (req, res) => {
-    const { name, email, password, passwordConfirmation } = req.body;
-    console.log('SIGNUP');
-    res.status(201).json({ name, email, password, passwordConfirmation });
-  });
+  router.post('/signup', expressRouterAdapter(makeSignUpController()));
 };

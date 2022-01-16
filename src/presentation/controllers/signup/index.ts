@@ -7,13 +7,13 @@ import {
 
 import {
   AddAccount,
-  controllers,
+  Controllers,
   EmailValidator,
   HttpRequest,
   HttpResponse,
 } from './signup-protocols';
 
-export class SignUpController implements controllers {
+export class SignUpController implements Controllers {
   constructor(
     private readonly emailValidator: EmailValidator,
     private readonly addAccount: AddAccount,
