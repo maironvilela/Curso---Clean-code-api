@@ -1,6 +1,10 @@
 import { Authentication } from '../../../domain/usecases/authentication';
 import { InvalidParamError, MissingParamError, ServerError } from '../../error';
-import { badRequest, internalServerError } from '../../helpers/http-helpers';
+import {
+  badRequest,
+  internalServerError,
+  unauthorized,
+} from '../../helpers/http-helpers';
 import { HttpRequest } from '../../protocols';
 import { EmailValidator } from '../signup/signup-protocols';
 import { LoginController } from './';
@@ -13,7 +17,7 @@ interface SutTypes {
 
 const makeAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth(email: string, password: string): Promise<string> {
+    async auth(email: string, password: string): Promise<string | null> {
       return await new Promise(resolve => resolve('any_token'));
     }
   }
@@ -88,8 +92,6 @@ describe('Login Controller', () => {
 
     const response = await sut.handle(makeHttpRequest());
 
-    console.log(internalServerError(new ServerError('Internal Server Error')));
-
     expect(response.statusCode).toEqual(500);
     expect(response.body).toEqual(new ServerError('Internal Server Error'));
   });
@@ -115,5 +117,18 @@ describe('Login Controller', () => {
     await sut.handle(makeHttpRequest());
 
     expect(authSpy).toHaveBeenCalledWith(email, password);
+  });
+
+  it('should ensure that the authentication function returns code 401 in case of failure in authentication', async () => {
+    const { sut, authenticationStub } = makeSut();
+
+    jest
+      .spyOn(authenticationStub, 'auth')
+      .mockReturnValueOnce(new Promise(resolve => resolve(null)));
+
+    const response = await sut.handle(makeHttpRequest());
+
+    expect(response.statusCode).toEqual(401);
+    expect(response).toEqual(unauthorized());
   });
 });
