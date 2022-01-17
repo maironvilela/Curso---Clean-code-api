@@ -1,8 +1,8 @@
 import { MissingParamError, InvalidParamError } from '../../error';
 import {
   badRequest,
-  ok,
   internalServerError,
+  create,
 } from '../../helpers/http-helpers';
 
 import {
@@ -49,7 +49,7 @@ export class SignUpController implements Controllers {
         email,
         password,
       });
-      return ok(account);
+      return create(account);
     } catch (err) {
       return internalServerError(err);
     }

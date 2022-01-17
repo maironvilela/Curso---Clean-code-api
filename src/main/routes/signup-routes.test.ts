@@ -21,6 +21,6 @@ describe('Signup router', () => {
       password: 'password',
       passwordConfirmation: 'password',
     });
-    console.log(response.statusCode);
+    expect(response.statusCode).toEqual(201);
   });
 });

@@ -6,6 +6,7 @@ import {
   AccountModel,
   AddAccountModel,
   EmailValidator,
+  HttpRequest,
 } from './signup-protocols';
 
 interface MakeSutTypes {
@@ -49,6 +50,15 @@ const makeSutFactory = (): MakeSutTypes => {
   const sut = new SignUpController(emailValidatorStub, addAccountStub);
   return { sut, emailValidatorStub, addAccountStub };
 };
+
+const makeHttpRequest = (): HttpRequest => ({
+  body: {
+    name: 'valid_name',
+    email: 'valid_email@email.com',
+    password: 'valid_password',
+    passwordConfirmation: 'valid_password',
+  },
+});
 
 describe('SignUp Controller', () => {
   test('should be able return code 400 if the username is not provided', async () => {
@@ -146,16 +156,7 @@ describe('SignUp Controller', () => {
 
     jest.spyOn(emailValidatorStub, 'validate').mockReturnValueOnce(false);
 
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'invalid@email.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(makeHttpRequest());
 
     expect(httpResponse.statusCode).toEqual(400);
     expect(httpResponse.body).toBeInstanceOf(InvalidParamError);
@@ -163,21 +164,9 @@ describe('SignUp Controller', () => {
   });
   test('should be able called with correct email', async () => {
     const { sut, emailValidatorStub } = makeSutFactory();
-
     const validateSpy = jest.spyOn(emailValidatorStub, 'validate');
-
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'correct.email@email.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    await sut.handle(httpRequest);
-
-    expect(validateSpy).toHaveBeenCalledWith('correct.email@email.com');
+    await sut.handle(makeHttpRequest());
+    expect(validateSpy).toHaveBeenCalledWith(makeHttpRequest().body.email);
   });
   test('should be able return code 500 if there is an error on the server when validating the email', async () => {
     const { sut, emailValidatorStub } = makeSutFactory();
@@ -186,16 +175,7 @@ describe('SignUp Controller', () => {
       throw new ServerError('Internal Server Error');
     });
 
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any@email.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(makeHttpRequest());
 
     expect(httpResponse.statusCode).toEqual(500);
     expect(httpResponse.body).toBeInstanceOf(ServerError);
@@ -206,15 +186,7 @@ describe('SignUp Controller', () => {
 
     const addSpy = jest.spyOn(addAccountStub, 'add');
 
-    const httpRequest = {
-      body: {
-        name: 'valid_name',
-        email: 'valid_email@email.com',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password',
-      },
-    };
-    await sut.handle(httpRequest);
+    await sut.handle(makeHttpRequest());
     expect(addSpy).toHaveBeenCalledWith({
       name: 'valid_name',
       email: 'valid_email@email.com',
@@ -233,37 +205,18 @@ describe('SignUp Controller', () => {
         return promise;
       });
 
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any@email.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
+    const httpResponse = await sut.handle(makeHttpRequest());
 
     expect(httpResponse.statusCode).toEqual(500);
-    expect(httpResponse.body).toBeInstanceOf(ServerError);
     expect(httpResponse.body).toEqual(new ServerError('Internal Server Error'));
   });
 
-  test('should be able return code 200 when the account is saved successfully', async () => {
+  test('should be able return code 201 when the account is saved successfully', async () => {
     const { sut } = makeSutFactory();
 
-    const httpRequest = {
-      body: {
-        name: 'valid_name',
-        email: 'valid_email@email.com',
-        password: 'valid_password',
-        passwordConfirmation: 'valid_password',
-      },
-    };
+    const httpResponse = await sut.handle(makeHttpRequest());
 
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse.statusCode).toEqual(200);
+    expect(httpResponse.statusCode).toEqual(201);
     expect(httpResponse.body).toEqual({
       id: 'valid_id',
       name: 'valid_name',
