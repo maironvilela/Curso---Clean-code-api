@@ -4,6 +4,7 @@ import {
   badRequest,
   internalServerError,
   ok,
+  unauthorized,
 } from '../../helpers/http-helpers';
 import { HttpRequest, HttpResponse } from '../../protocols';
 import { EmailValidator } from '../signup/signup-protocols';
@@ -17,28 +18,25 @@ export class LoginController {
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
       const { email, password } = request.body;
+      const fieldsRequired = ['email', 'password'];
 
-      if (!email) {
-        return await new Promise(resolve =>
-          resolve(badRequest(new MissingParamError('email'))),
-        );
-      }
-
-      if (!password) {
-        return await new Promise(resolve =>
-          resolve(badRequest(new MissingParamError('password'))),
-        );
+      for (const field of fieldsRequired) {
+        if (!request.body[field]) {
+          return badRequest(new MissingParamError(field));
+        }
       }
 
       const isValidEmail = this.emailValidator.validate(email);
 
       if (!isValidEmail) {
-        return await new Promise(resolve =>
-          resolve(badRequest(new InvalidParamError('email'))),
-        );
+        return badRequest(new InvalidParamError('email'));
       }
 
-      await this.authentication.auth(email, password);
+      const token = await this.authentication.auth(email, password);
+
+      if (!token) {
+        return unauthorized();
+      }
 
       return await new Promise(resolve => resolve(ok({})));
     } catch (err) {
