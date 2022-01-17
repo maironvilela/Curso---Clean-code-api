@@ -183,7 +183,7 @@ describe('SignUp Controller', () => {
     const { sut, emailValidatorStub } = makeSutFactory();
 
     jest.spyOn(emailValidatorStub, 'validate').mockImplementationOnce(() => {
-      throw new ServerError();
+      throw new ServerError('Internal Server Error');
     });
 
     const httpRequest = {
@@ -199,7 +199,7 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toEqual(500);
     expect(httpResponse.body).toBeInstanceOf(ServerError);
-    expect(httpResponse.body).toEqual(new ServerError());
+    expect(httpResponse.body).toEqual(new ServerError('Internal Server Error'));
   });
   test('should be able called the addAccount function with the correct parameters', async () => {
     const { sut, addAccountStub } = makeSutFactory();
@@ -228,7 +228,7 @@ describe('SignUp Controller', () => {
       .spyOn(addAccountStub, 'add')
       .mockImplementationOnce(async (): Promise<any> => {
         const promise = await new Promise((resolve, reject) =>
-          reject(new ServerError()),
+          reject(new ServerError('Internal Server Error')),
         );
         return promise;
       });
@@ -246,7 +246,7 @@ describe('SignUp Controller', () => {
 
     expect(httpResponse.statusCode).toEqual(500);
     expect(httpResponse.body).toBeInstanceOf(ServerError);
-    expect(httpResponse.body).toEqual(new ServerError());
+    expect(httpResponse.body).toEqual(new ServerError('Internal Server Error'));
   });
 
   test('should be able return code 200 when the account is saved successfully', async () => {

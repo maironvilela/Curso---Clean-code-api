@@ -8,7 +8,7 @@ describe('Signup router', () => {
     await MongoHelper.connect(uri);
   });
   beforeEach(async () => {
-    const accountCollection = MongoHelper.getCollection('accounts');
+    const accountCollection = await MongoHelper.getCollection('accounts');
     await accountCollection.deleteMany({});
   });
   afterAll(async () => {

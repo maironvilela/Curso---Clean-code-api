@@ -1,8 +1,8 @@
-import { MissingParamError, InvalidParamError, ServerError } from '../../error';
+import { MissingParamError, InvalidParamError } from '../../error';
 import {
   badRequest,
-  internalServerError,
   ok,
+  internalServerError,
 } from '../../helpers/http-helpers';
 
 import {
@@ -51,7 +51,7 @@ export class SignUpController implements Controllers {
       });
       return ok(account);
     } catch (err) {
-      return internalServerError(new ServerError());
+      return internalServerError(err);
     }
   }
 }
