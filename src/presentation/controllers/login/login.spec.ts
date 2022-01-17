@@ -1,12 +1,10 @@
-import { Authentication } from '../../../domain/usecases/authentication';
 import { InvalidParamError, MissingParamError, ServerError } from '../../error';
 import {
   badRequest,
   internalServerError,
   unauthorized,
 } from '../../helpers/http-helpers';
-import { HttpRequest } from '../../protocols';
-import { EmailValidator } from '../signup/signup-protocols';
+import { HttpRequest, EmailValidator, Authentication } from './login-protocols';
 import { LoginController } from './';
 
 interface SutTypes {
@@ -117,6 +115,20 @@ describe('Login Controller', () => {
     await sut.handle(makeHttpRequest());
 
     expect(authSpy).toHaveBeenCalledWith(email, password);
+  });
+  it('should ensure that the LoginController returns code 500 in case of failure in authentication', async () => {
+    const { sut, authenticationStub } = makeSut();
+
+    jest
+      .spyOn(authenticationStub, 'auth')
+      .mockReturnValueOnce(
+        new Promise((resolve, reject) => reject(new Error())),
+      );
+
+    const response = await sut.handle(makeHttpRequest());
+
+    expect(response.statusCode).toEqual(500);
+    expect(response.body).toBeInstanceOf(ServerError);
   });
 
   it('should ensure that the authentication function returns code 401 in case of failure in authentication', async () => {
