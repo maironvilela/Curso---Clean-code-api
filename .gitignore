@@ -3,4 +3,5 @@ node_modules
 dist
 .env
 tasks.md
+./globalConfig.json
 
