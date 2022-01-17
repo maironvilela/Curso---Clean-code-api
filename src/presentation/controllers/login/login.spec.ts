@@ -44,7 +44,7 @@ describe('Login Controller', () => {
     expect(response).toEqual(badRequest(new MissingParamError('email')));
   });
 
-  test('should be able return code 400 if the password is not provider', async () => {
+  it('should be able return code 400 if the password is not provider', async () => {
     const { sut } = makeSut();
     const response = await sut.handle({
       body: {
@@ -79,5 +79,17 @@ describe('Login Controller', () => {
 
     expect(response.statusCode).toEqual(500);
     expect(response.body).toEqual(new ServerError('Internal Server Error'));
+  });
+
+  it('should call the validate function with the correct email', async () => {
+    const { sut, emailValidatorStub } = makeSut();
+
+    const validateSpy = jest.spyOn(emailValidatorStub, 'validate');
+
+    await sut.handle(makeHttpRequest());
+
+    console.log(internalServerError(new ServerError('Internal Server Error')));
+
+    expect(validateSpy).toHaveBeenCalledWith(makeHttpRequest().body.email);
   });
 });
