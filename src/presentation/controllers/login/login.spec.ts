@@ -1,5 +1,5 @@
-import { InvalidParamError, MissingParamError } from '../../error';
-import { badRequest } from '../../helpers/http-helpers';
+import { InvalidParamError, MissingParamError, ServerError } from '../../error';
+import { badRequest, internalServerError } from '../../helpers/http-helpers';
 import { HttpRequest } from '../../protocols';
 import { EmailValidator } from '../signup/signup-protocols';
 import { LoginController } from './';
@@ -64,5 +64,20 @@ describe('Login Controller', () => {
 
     expect(response.statusCode).toEqual(400);
     expect(response).toEqual(badRequest(new InvalidParamError('email')));
+  });
+
+  it('should ensure that the LoginController returns code 500 in case of failure to validate the email', async () => {
+    const { sut, emailValidatorStub } = makeSut();
+
+    jest.spyOn(emailValidatorStub, 'validate').mockImplementationOnce(() => {
+      throw new ServerError('Internal Server Error');
+    });
+
+    const response = await sut.handle(makeHttpRequest());
+
+    console.log(internalServerError(new ServerError('Internal Server Error')));
+
+    expect(response.statusCode).toEqual(500);
+    expect(response.body).toEqual(new ServerError('Internal Server Error'));
   });
 });
