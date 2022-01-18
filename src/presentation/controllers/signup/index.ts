@@ -4,6 +4,7 @@ import {
   internalServerError,
   create,
 } from '../../helpers/http-helpers';
+import { Validation } from '../../protocols/Validation';
 
 import {
   AddAccount,
@@ -17,10 +18,17 @@ export class SignUpController implements Controllers {
   constructor(
     private readonly emailValidator: EmailValidator,
     private readonly addAccount: AddAccount,
+    private readonly validation: Validation,
   ) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
+      const error = this.validation.validate(request.body);
+
+      if (error) {
+        return badRequest(error);
+      }
+
       const { name, email, password, passwordConfirmation } = request.body;
       const fieldsRequired = [
         'name',

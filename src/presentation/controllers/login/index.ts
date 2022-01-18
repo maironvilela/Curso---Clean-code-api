@@ -42,7 +42,7 @@ export class LoginController {
         return unauthorized();
       }
 
-      return await new Promise(resolve => resolve(ok({})));
+      return await new Promise(resolve => resolve(ok({ token })));
     } catch (err) {
       return internalServerError(err);
     }

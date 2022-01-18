@@ -116,6 +116,7 @@ describe('Login Controller', () => {
 
     expect(authSpy).toHaveBeenCalledWith(email, password);
   });
+
   it('should ensure that the LoginController returns code 500 in case of failure in authentication', async () => {
     const { sut, authenticationStub } = makeSut();
 
@@ -142,5 +143,14 @@ describe('Login Controller', () => {
 
     expect(response.statusCode).toEqual(401);
     expect(response).toEqual(unauthorized());
+  });
+
+  it('should ensure that the authentication function returns code 401 in case of failure in authentication', async () => {
+    const { sut } = makeSut();
+
+    const response = await sut.handle(makeHttpRequest());
+
+    expect(response.statusCode).toEqual(200);
+    expect(response.body).toEqual({ token: 'any_token' });
   });
 });

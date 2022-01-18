@@ -8,11 +8,13 @@ import {
   EmailValidator,
   HttpRequest,
 } from './signup-protocols';
+import { Validation } from '../../protocols/Validation';
 
 interface MakeSutTypes {
   sut: SignUpController;
   emailValidatorStub: EmailValidator;
   addAccountStub: AddAccount;
+  validationStub: Validation;
 }
 
 // Factory para a criação do makeEmailValidator
@@ -23,6 +25,15 @@ const makeEmailValidator = (): EmailValidator => {
     }
   }
   return new EmailValidatorStub();
+};
+const makeValidation = (): Validation => {
+  class ValidatorStub implements Validation {
+    constructor(private readonly fieldName: string) {}
+    validate(input: string): Error | null {
+      return null;
+    }
+  }
+  return new ValidatorStub('');
 };
 // Factory para a criação do makeAddAccount
 const makeAddAccount = (): AddAccount => {
@@ -44,11 +55,16 @@ const makeAddAccount = (): AddAccount => {
 
 // Factory para a criação do makeSutFactory
 const makeSutFactory = (): MakeSutTypes => {
+  const validationStub = makeValidation();
   const emailValidatorStub = makeEmailValidator();
   const addAccountStub = makeAddAccount();
 
-  const sut = new SignUpController(emailValidatorStub, addAccountStub);
-  return { sut, emailValidatorStub, addAccountStub };
+  const sut = new SignUpController(
+    emailValidatorStub,
+    addAccountStub,
+    validationStub,
+  );
+  return { sut, emailValidatorStub, addAccountStub, validationStub };
 };
 
 const makeHttpRequest = (): HttpRequest => ({
@@ -61,76 +77,6 @@ const makeHttpRequest = (): HttpRequest => ({
 });
 
 describe('SignUp Controller', () => {
-  test('should be able return code 400 if the username is not provided', async () => {
-    const { sut } = makeSutFactory();
-
-    const httpRequest = {
-      body: {
-        email: 'any_email@emnail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse.statusCode).toEqual(400);
-    expect(httpResponse.body).toBeInstanceOf(MissingParamError);
-    expect(httpResponse.body).toEqual(new MissingParamError('name'));
-  });
-  test('should be able return code 400 if the email is not provided', async () => {
-    const { sut } = makeSutFactory();
-
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse.statusCode).toEqual(400);
-    expect(httpResponse.body).toBeInstanceOf(MissingParamError);
-    expect(httpResponse.body).toEqual(new MissingParamError('email'));
-  });
-  test('should be able return code 400 if the password is not provided', async () => {
-    const { sut } = makeSutFactory();
-
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@emnail.com',
-        passwordConfirmation: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse.statusCode).toEqual(400);
-    expect(httpResponse.body).toBeInstanceOf(MissingParamError);
-    expect(httpResponse.body).toEqual(new MissingParamError('password'));
-  });
-  test('should be able return code 400 if the passwordConfirmation is not provided', async () => {
-    const { sut } = makeSutFactory();
-
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@emnail.com',
-        password: 'any_password',
-      },
-    };
-
-    const httpResponse = await sut.handle(httpRequest);
-
-    expect(httpResponse.statusCode).toEqual(400);
-    expect(httpResponse.body).toBeInstanceOf(MissingParamError);
-    expect(httpResponse.body).toEqual(
-      new MissingParamError('passwordConfirmation'),
-    );
-  });
   test('should be able return code 400 if the password Confirmation fails', async () => {
     const { sut } = makeSutFactory();
 
@@ -181,7 +127,7 @@ describe('SignUp Controller', () => {
     expect(httpResponse.body).toBeInstanceOf(ServerError);
     expect(httpResponse.body).toEqual(new ServerError('Internal Server Error'));
   });
-  test('should be able called the addAccount function with the correct parameters', async () => {
+  test('should be able called the addAccount function with the correct values', async () => {
     const { sut, addAccountStub } = makeSutFactory();
 
     const addSpy = jest.spyOn(addAccountStub, 'add');
@@ -223,5 +169,28 @@ describe('SignUp Controller', () => {
       email: 'valid_email@email.com',
       password: 'valid_password',
     });
+  });
+
+  test('should be able called the validator function with the correct values', async () => {
+    const { sut, validationStub } = makeSutFactory();
+
+    const addSpy = jest.spyOn(validationStub, 'validate');
+    const httpRequest = makeHttpRequest();
+
+    await sut.handle(httpRequest);
+
+    expect(addSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+  test('should be able return code 400 if there is validator error', async () => {
+    const { sut, validationStub } = makeSutFactory();
+
+    jest
+      .spyOn(validationStub, 'validate')
+      .mockReturnValueOnce(new MissingParamError('any_param'));
+
+    const httpResponse = await sut.handle(makeHttpRequest());
+    console.log(httpResponse);
+
+    expect(httpResponse.statusCode).toEqual(400);
   });
 });
