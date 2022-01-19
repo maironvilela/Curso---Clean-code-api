@@ -90,7 +90,6 @@ describe('SignUp Controller', () => {
     expect(httpResponse.statusCode).toEqual(500);
     expect(httpResponse.body).toEqual(new ServerError('Internal Server Error'));
   });
-
   test('should be able return code 201 when the account is saved successfully', async () => {
     const { sut } = makeSutFactory();
 
@@ -122,7 +121,6 @@ describe('SignUp Controller', () => {
       .mockReturnValueOnce(new MissingParamError('any_param'));
 
     const httpResponse = await sut.handle(makeHttpRequest());
-    console.log(httpResponse);
 
     expect(httpResponse.statusCode).toEqual(400);
   });

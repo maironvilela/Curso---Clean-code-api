@@ -16,7 +16,7 @@ export const expressRouterAdapter = (controller: Controllers) => {
 
     // Adiciona o status e o corpo do response do controlador na response do express
 
-    if (httpResponse.statusCode === 201) {
+    if (httpResponse.statusCode === 201 || httpResponse.statusCode === 200) {
       resp.status(httpResponse.statusCode).json(httpResponse.body);
     } else {
       resp

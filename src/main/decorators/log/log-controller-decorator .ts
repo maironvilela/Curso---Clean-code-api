@@ -1,16 +1,16 @@
+import { LogErrorRepository } from '../../../data/protocols/db/log-error-repository';
 import {
   Controllers,
   HttpRequest,
   HttpResponse,
 } from '../../../presentation/protocols';
-import { LogError } from './log-controller-decorator.spec';
 
 /* A classe deve implementar a mesma interface da classe que será "decorada" */
 export class LogControllerDecorator implements Controllers {
   /* Recebe como parâmetro do construtor o controller que deseja adicionar funcionalidade */
   constructor(
     private readonly controller: Controllers,
-    private readonly logError: LogError,
+    private readonly logError: LogErrorRepository,
   ) {}
 
   /* Função implementada da interface */

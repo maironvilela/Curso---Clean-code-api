@@ -1,12 +1,12 @@
 import { makeSignUpValidation } from './signup-validation';
-import { ValidationComposite } from '../../validation/validation-composite';
-import { RequiredFieldsValidation } from '../../validation/required-fields-validation';
-import { Validation } from '../../presentation/protocols/Validation';
-import { EmailValidation } from '../../validation/email-validation';
-import { EmailValidator } from '../../presentation/protocols/email-validator';
-import { CompareFieldsValidation } from './../../validation/compare-fields-validation';
+import { RequiredFieldsValidation } from '../../../validation/required-fields-validation';
+import { Validation } from '../../../presentation/protocols/Validation';
+import { EmailValidation } from '../../../validation/email-validation';
+import { EmailValidator } from '../../../presentation/protocols/email-validator';
+import { CompareFieldsValidation } from '../../../validation/compare-fields-validation';
+import { ValidationComposite } from '../../../validation/validation-composite';
 //  realiza o mock do modulo validation-composite. Ja que não é necessário passar o construtor
-jest.mock('../../validation/validation-composite');
+jest.mock('../../../validation/validation-composite');
 
 const makeEmailValidatorStub = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {

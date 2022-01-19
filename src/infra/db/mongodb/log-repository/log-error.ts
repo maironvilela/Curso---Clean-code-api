@@ -1,7 +1,7 @@
-import { LogError } from '../../../../main/decorators/log/log-controller-decorator.spec';
+import { LogErrorRepository } from '../../../../data/protocols/db/log-error-repository';
 import { MongoHelper } from '../helpers/mongo-helpers';
 
-export class LogMongoRepository implements LogError {
+export class LogMongoRepository implements LogErrorRepository {
   async log(stack: string): Promise<void> {
     const accountCollection = await MongoHelper.getCollection('errors');
     await accountCollection.insertOne({ error: stack });
