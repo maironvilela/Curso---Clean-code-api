@@ -61,7 +61,6 @@ describe('Account Mongo Repository', () => {
     const account = await accountMongoRepository.load(
       'invalid_email@email.com',
     );
-
     expect(account).toBeNull();
   });
 });

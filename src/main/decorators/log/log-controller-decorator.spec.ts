@@ -1,4 +1,4 @@
-import { LogErrorRepository } from '../../../data/protocols/db/log-error-repository';
+import { LogRepository } from '../../../data/protocols/db/log-repository';
 import { ServerError } from '../../../presentation/error';
 import { internalServerError } from '../../../presentation/helpers/http-helpers';
 import {
@@ -11,11 +11,11 @@ import { LogControllerDecorator } from './log-controller-decorator ';
 interface makeSutTypes {
   sut: LogControllerDecorator;
   controllerStub: Controllers;
-  logErrorStub: LogErrorRepository;
+  logErrorStub: LogRepository;
 }
 
-const makeLogErrorStub = (): LogErrorRepository => {
-  class LogErrorRepositoryStub implements LogErrorRepository {
+const makeLogErrorStub = (): LogRepository => {
+  class LogErrorRepositoryStub implements LogRepository {
     async log(stack: string): Promise<void> {}
   }
   return new LogErrorRepositoryStub();

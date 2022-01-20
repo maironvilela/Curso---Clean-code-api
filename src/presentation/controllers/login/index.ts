@@ -23,10 +23,10 @@ export class LoginController {
         return badRequest(error);
       }
 
-      const authenticationResult = await this.authentication.auth(
+      const authenticationResult = await this.authentication.auth({
         email,
         password,
-      );
+      });
 
       if (!authenticationResult) {
         return unauthorized();

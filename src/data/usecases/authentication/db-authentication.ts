@@ -1,14 +1,24 @@
 import {
   Authentication,
+  AuthenticationProps,
   AuthenticationResult,
 } from '../../../domain/usecases/authentication';
-import {
-  HashComparer,
-  LoadAccountByEmailRepository,
-  TokenGenerator,
-  UpdateAccessTokenRepository,
-} from './db-authentication.spec';
+import { HashComparer } from '../../protocols/cryptography/hash-comparer';
+import { TokenGenerator } from '../../protocols/cryptography/token-generator';
+import { LoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository';
+import { UpdateAccessTokenRepository } from '../../protocols/db/update-access-token-repository';
 
+/**
+@description Implementação da interface de regra de negocio Authentication.
+@version  development
+@constructor LoadAccountByEmailRepository: Adiciona a funcionalidade de buscar uma conta de usuário
+             através do email
+@constructor HashComparer: Adiciona a funcionalidade de comparar a senha recebida com a senha carregada
+             do banco de dados.
+@constructor TokenGenerator: Adiciona a funcionalidade de gerar um token para a sessão do usuário
+@constructor UpdateAccessTokenRepository: Adiciona a funcionalidade de atualizar o token do usuário
+             na base de dados
+*/
 export class DBAuthentication implements Authentication {
   constructor(
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
@@ -17,10 +27,28 @@ export class DBAuthentication implements Authentication {
     private readonly updateAccessTokenRepositoryStub: UpdateAccessTokenRepository,
   ) {}
 
-  async auth(
-    email: string,
-    password: string,
-  ): Promise<AuthenticationResult | null> {
+  /**
+    @description Função responsável por validar o login do usuário
+    @version development
+    @param AuthenticationProps
+    ```js
+      Interface AuthenticationProps {
+        email: string;
+        password: string;
+      }
+    ```
+    @return
+    ```js
+      interface AuthenticationResult {
+        name: string;
+        token: string;
+      }
+    ```
+    */
+  async auth({
+    email,
+    password,
+  }: AuthenticationProps): Promise<AuthenticationResult | null> {
     const account = await this.loadAccountByEmailRepository.load(email);
 
     if (account) {
@@ -30,9 +58,7 @@ export class DBAuthentication implements Authentication {
       );
       if (isValidPassword) {
         const token = this.tokenGenerator.generate();
-        // Atualizar o token no banco de dados
         await this.updateAccessTokenRepositoryStub.update(account.id, token);
-
         return { name: account.name, token };
       }
     }

@@ -8,6 +8,7 @@ import { Validation } from '../../protocols/Validation';
 import { LoginController } from './';
 import {
   Authentication,
+  AuthenticationProps,
   AuthenticationResult,
   HttpRequest,
 } from './login-protocols';
@@ -26,10 +27,10 @@ const makeHttpRequest = (): HttpRequest => ({
 
 const makeAuthenticationStub = (): Authentication => {
   class AuthenticationStub implements Authentication {
-    async auth(
-      email: string,
-      password: string,
-    ): Promise<AuthenticationResult | null> {
+    async auth({
+      email,
+      password,
+    }: AuthenticationProps): Promise<AuthenticationResult | null> {
       return await new Promise(resolve =>
         resolve({ name: 'any_name', token: 'any_token' }),
       );

@@ -1,9 +1,12 @@
-//  fg.sync('**/src/main/routes/**routes.ts'):
-// await import(`../../../${file}`)).default(router):
-
 import { Express, Router } from 'express';
 import fg from 'fast-glob';
 
+/**
+  @description Função de composição das configurações do express. Define a rota raiz da api
+               importando os arquivos de definição de rotas passando o router como parâmetro
+  @version development
+  @param app (Instância do express)
+*/
 export default (app: Express): void => {
   const router = Router();
   app.use('/api', router);

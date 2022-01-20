@@ -19,6 +19,6 @@ describe('Login Router', () => {
       email: 'jose@email.com.br',
       password: 'password',
     });
-    expect(response.statusCode).toEqual(200);
+    expect(response.statusCode).toEqual(203);
   });
 });

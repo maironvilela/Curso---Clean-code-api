@@ -1,4 +1,4 @@
-import { LoadAccountByEmailRepository } from '../../../../data/usecases/authentication/db-authentication.spec';
+import { LoadAccountByEmailRepository } from '../../../../data/protocols/db/load-account-by-email-repository';
 import { AccountModel } from '../../../../domain/models/account';
 
 import {
@@ -6,15 +6,21 @@ import {
   AddAccountModel,
 } from '../../../../domain/usecases/add-account';
 import { MongoHelper } from '../helpers/mongo-helpers';
-import { map } from './account-mapper';
+import { mapByDocument, mapById } from './account-mapper';
 
+/**
+@description Classe que utiliza o MongoDB para realizar a persistências das informações.
+@version development
+@implements AddAccount
+@implements LoadAccountByEmailRepository
+*/
 export class AccountMongoRepository
   implements AddAccount, LoadAccountByEmailRepository
 {
   async add(accountData: AddAccountModel): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const { insertedId } = await accountCollection.insertOne(accountData);
-    return await map(insertedId);
+    return await mapById(insertedId);
   }
 
   async load(email: string): Promise<AccountModel | null> {
@@ -34,12 +40,11 @@ export class AccountMongoRepository
       },
     );
 
-    if (document) {
-      const { _id, ...rest } = document;
-      const account = { ...rest, id: _id.toHexString() } as AccountModel;
-      return account;
+    if (!document) {
+      return null;
     }
 
-    return null;
+    const account = mapByDocument(document);
+    return account;
   }
 }

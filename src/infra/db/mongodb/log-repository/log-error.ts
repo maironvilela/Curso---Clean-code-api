@@ -1,7 +1,11 @@
-import { LogErrorRepository } from '../../../../data/protocols/db/log-error-repository';
+import { LogRepository } from '../../../../data/protocols/db/log-repository';
 import { MongoHelper } from '../helpers/mongo-helpers';
 
-export class LogMongoRepository implements LogErrorRepository {
+/**
+@description Implementação da interface LogRepository para persistência do log de Erro no MongoDB
+@version  development
+*/
+export class LogMongoRepository implements LogRepository {
   async log(stack: string): Promise<void> {
     const accountCollection = await MongoHelper.getCollection('errors');
     await accountCollection.insertOne({ error: stack });

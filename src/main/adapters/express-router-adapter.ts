@@ -1,12 +1,16 @@
 import { Request, Response } from 'express';
 import { Controllers, HttpRequest } from '../../presentation/protocols';
 
-/* Recebe como parâmetro o controller que se deseja adapta */
+/**
+  @description Função utilizada para adaptar o controller utilizada pelas requisições do express
+               para o controller da aplicação. A função retornada é um middleware do express. Recebe as informação
+               das requisições recebendo o request e response e chamando a função handle do controlador que tratara
+               as informações da requisição
+  @version development
+  @param controller
+  @return retorna um middleware adequado para receber as requisições do express
+ */
 export const expressRouterAdapter = (controller: Controllers) => {
-  /* A função retornada é um middleware do express. Recebe as informação das requisições
-    recebendo o request e response e chamando a função handle do controlador que tratara
-    as informações da requisição
-  */
   return async (req: Request, resp: Response) => {
     const httpRequest: HttpRequest = {
       body: req.body,

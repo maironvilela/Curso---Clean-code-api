@@ -1,3 +1,8 @@
+/**
+@summary configurações do servidor express
+@version development
+*/
+
 import express from 'express';
 import setupMiddlewares from './middleware';
 import setupRoutes from './routes';

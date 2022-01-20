@@ -1,20 +1,9 @@
+import { HashComparer } from '../../protocols/cryptography/hash-comparer';
+import { TokenGenerator } from '../../protocols/cryptography/token-generator';
+import { LoadAccountByEmailRepository } from '../../protocols/db/load-account-by-email-repository';
+import { UpdateAccessTokenRepository } from '../../protocols/db/update-access-token-repository';
 import { AccountModel } from '../add-account/db-add-account-protocols';
 import { DBAuthentication } from './db-authentication';
-
-export interface LoadAccountByEmailRepository {
-  load: (email: string) => Promise<AccountModel | null>;
-}
-export interface UpdateAccessTokenRepository {
-  update: (id: string, token: string) => Promise<void>;
-}
-
-export interface HashComparer {
-  compare: (value: string, hashedValue: string) => Promise<boolean>;
-}
-
-export interface TokenGenerator {
-  generate: () => string;
-}
 
 interface SutTypes {
   sut: DBAuthentication;
@@ -96,7 +85,7 @@ describe('DB Authentication', () => {
     const { sut, loadAccountByEmailRepositoryStub } = makeSut();
 
     const loadSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'load');
-    await sut.auth('any_email', 'any_password');
+    await sut.auth({ email: 'any_email', password: 'any_password' });
 
     expect(loadSpy).toHaveBeenCalledWith('any_email');
   });
@@ -109,7 +98,7 @@ describe('DB Authentication', () => {
       .mockReturnValueOnce(
         new Promise((resolve, reject) => reject(new Error())),
       );
-    const promise = sut.auth('any_email', 'any_password');
+    const promise = sut.auth({ email: 'any_email', password: 'any_password' });
     await expect(promise).rejects.toThrow();
   });
 
@@ -120,7 +109,10 @@ describe('DB Authentication', () => {
       .spyOn(loadAccountByEmailRepositoryStub, 'load')
       .mockReturnValueOnce(new Promise(resolve => resolve(null)));
 
-    const token = await sut.auth('any_email', 'any_password');
+    const token = await sut.auth({
+      email: 'any_email',
+      password: 'any_password',
+    });
 
     expect(token).toBeNull();
   });
@@ -130,7 +122,7 @@ describe('DB Authentication', () => {
 
     const loadSpy = jest.spyOn(hashComparerStub, 'compare');
 
-    await sut.auth('any_email@email.com', 'password');
+    await sut.auth({ email: 'any_email@email.com', password: 'password' });
 
     expect(loadSpy).toHaveBeenCalledWith('password', 'hashed_password');
   });
@@ -142,7 +134,10 @@ describe('DB Authentication', () => {
       .spyOn(hashComparerStub, 'compare')
       .mockReturnValue(new Promise(resolve => resolve(false)));
 
-    const result = await sut.auth('any_email@email.com', 'password');
+    const result = await sut.auth({
+      email: 'any_email@email.com',
+      password: 'password',
+    });
 
     expect(result).toBeNull();
   });
@@ -152,7 +147,7 @@ describe('DB Authentication', () => {
 
     const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate');
 
-    await sut.auth('any_email@email.com', 'any_password');
+    await sut.auth({ email: 'any_email@email.com', password: 'any_password' });
 
     expect(generateSpy).toHaveBeenCalled();
   });
@@ -160,7 +155,10 @@ describe('DB Authentication', () => {
   it('Should return username and token in case success', async () => {
     const { sut } = makeSut();
 
-    const result = await sut.auth('any_email', 'any_password');
+    const result = await sut.auth({
+      email: 'any_email',
+      password: 'any_password',
+    });
 
     expect(result).toEqual({ token: 'any_token', name: 'any_name' });
   });
@@ -173,7 +171,7 @@ describe('DB Authentication', () => {
       'update',
     );
 
-    await sut.auth('any_email', 'any_password');
+    await sut.auth({ email: 'any_email', password: 'any_password' });
 
     expect(updateAccessTokenSpy).toHaveBeenCalledWith('any_id', 'any_token');
   });
@@ -187,7 +185,7 @@ describe('DB Authentication', () => {
         new Promise((resolve, reject) => reject(new Error())),
       );
 
-    const promise = sut.auth('any_email', 'any_password');
+    const promise = sut.auth({ email: 'any_email', password: 'any_password' });
 
     await expect(promise).rejects.toThrow();
   });
