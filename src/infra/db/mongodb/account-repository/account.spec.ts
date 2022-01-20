@@ -1,5 +1,10 @@
+/* eslint-disable @typescript-eslint/no-base-to-string */
 import { AccountMongoRepository } from './account';
 import { MongoHelper } from '../helpers/mongo-helpers';
+import { Collection } from 'mongodb';
+import { hash } from 'bcrypt';
+
+let accountCollection: Collection;
 
 const makeSut = (): AccountMongoRepository => {
   return new AccountMongoRepository();
@@ -11,7 +16,7 @@ describe('Account Mongo Repository', () => {
     await MongoHelper.connect(uri);
   });
   beforeEach(async () => {
-    const accountCollection = await MongoHelper.getCollection('accounts');
+    accountCollection = await MongoHelper.getCollection('accounts');
     await accountCollection.deleteMany({});
   });
   afterAll(async () => {
@@ -62,5 +67,27 @@ describe('Account Mongo Repository', () => {
       'invalid_email@email.com',
     );
     expect(account).toBeNull();
+  });
+
+  it('Should update account with accessToken', async () => {
+    // const accountMongoRepository = makeSut();
+
+    const password = await hash('123', 12);
+    const { insertedId } = await accountCollection.insertOne({
+      name: 'Meg',
+      email: 'meg@gmail.com',
+      password,
+    });
+
+    await accountCollection.updateOne(
+      {
+        _id: insertedId,
+      },
+      {
+        $set: {
+          accessToken: 'token',
+        },
+      },
+    );
   });
 });

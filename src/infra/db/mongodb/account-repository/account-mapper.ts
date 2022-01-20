@@ -47,7 +47,7 @@ export const mapById = async (insertedId: any): Promise<AccountModel> => {
 ```
  */
 export const mapByDocument = (document: any): AccountModel => {
-  const { _id, ...rest } = document;
-  const account = { ...rest, id: _id.toHexString() };
+  const { _id, ...documentWithoutId } = document;
+  const account = { ...documentWithoutId, id: _id };
   return account as AccountModel;
 };

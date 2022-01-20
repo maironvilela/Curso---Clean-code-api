@@ -1,4 +1,5 @@
 import { LoadAccountByEmailRepository } from '../../../../data/protocols/db/load-account-by-email-repository';
+import { UpdateAccessTokenRepository } from '../../../../data/protocols/db/update-access-token-repository';
 import { AccountModel } from '../../../../domain/models/account';
 
 import {
@@ -15,8 +16,25 @@ import { mapByDocument, mapById } from './account-mapper';
 @implements LoadAccountByEmailRepository
 */
 export class AccountMongoRepository
-  implements AddAccount, LoadAccountByEmailRepository
+  implements
+    AddAccount,
+    LoadAccountByEmailRepository,
+    UpdateAccessTokenRepository
 {
+  async update(id: string, token: string): Promise<void> {
+    const accountCollection = await MongoHelper.getCollection('accounts');
+    await accountCollection.updateOne(
+      {
+        _id: id,
+      },
+      {
+        $set: {
+          access_token: token,
+        },
+      },
+    );
+  }
+
   async add(accountData: AddAccountModel): Promise<AccountModel> {
     const accountCollection = await MongoHelper.getCollection('accounts');
     const { insertedId } = await accountCollection.insertOne(accountData);
@@ -43,8 +61,6 @@ export class AccountMongoRepository
     if (!document) {
       return null;
     }
-
-    const account = mapByDocument(document);
-    return account;
+    return mapByDocument(document);
   }
 }

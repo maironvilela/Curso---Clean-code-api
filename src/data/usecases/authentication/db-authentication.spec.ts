@@ -25,7 +25,7 @@ const makeHashComparerStub = (): HashComparer => {
 
 const makeTokenGeneratorStub = (): TokenGenerator => {
   class TokenGeneratorStub implements TokenGenerator {
-    generate(): string {
+    async generate(): Promise<string> {
       return 'any_token';
     }
   }

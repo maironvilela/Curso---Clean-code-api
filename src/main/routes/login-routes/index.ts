@@ -1,7 +1,7 @@
-import { Request, Router, Response } from 'express';
+import { Router } from 'express';
+import { expressRouterAdapter } from '../../adapters/express-router-adapter';
+import { makeLoginController } from '../../factories/login';
 
 export default (router: Router): void => {
-  router.post('/login', (req: Request, res: Response) => {
-    res.status(203).json({ message: 'OK' });
-  });
+  router.post('/login', expressRouterAdapter(makeLoginController()));
 };

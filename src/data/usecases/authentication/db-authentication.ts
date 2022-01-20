@@ -24,7 +24,7 @@ export class DBAuthentication implements Authentication {
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashedCompare: HashComparer,
     private readonly tokenGenerator: TokenGenerator,
-    private readonly updateAccessTokenRepositoryStub: UpdateAccessTokenRepository,
+    private readonly updateAccessTokenRepository: UpdateAccessTokenRepository,
   ) {}
 
   /**
@@ -57,8 +57,8 @@ export class DBAuthentication implements Authentication {
         account.password,
       );
       if (isValidPassword) {
-        const token = this.tokenGenerator.generate();
-        await this.updateAccessTokenRepositoryStub.update(account.id, token);
+        const token = await this.tokenGenerator.generate(account.id, 'secret');
+        await this.updateAccessTokenRepository.update(account.id, token);
         return { name: account.name, token };
       }
     }
