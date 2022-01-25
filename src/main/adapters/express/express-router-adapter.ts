@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Controllers, HttpRequest } from '../../presentation/protocols';
+import { Controllers, HttpRequest } from '../../../presentation/protocols';
 
 /**
   @description Função utilizada para adaptar o controller utilizada pelas requisições do express
