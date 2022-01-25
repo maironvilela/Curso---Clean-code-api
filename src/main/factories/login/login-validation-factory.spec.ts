@@ -3,7 +3,7 @@ import { Validation } from '../../../presentation/protocols/Validation';
 import { EmailValidation } from '../../../validation/email-validation';
 import { EmailValidator } from '../../../presentation/protocols/email-validator';
 import { ValidationComposite } from '../../../validation/validation-composite';
-import { makeLoginValidation } from './login-validation';
+import { makeLoginValidation } from './login-validation-controller';
 //  realiza o mock do modulo validation-composite. Ja que não é necessário passar o construtor
 jest.mock('../../../validation/validation-composite');
 

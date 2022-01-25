@@ -3,7 +3,7 @@ import {
   Hasher,
   AddAccountModel,
 } from './db-add-account-protocols';
-import { AddAccountRepository } from '../../protocols/db/add-account-repository';
+import { AddAccountRepository } from '../../protocols/db/account/add-account-repository';
 import { DbAddAccount } from './db-add-account';
 
 interface MakeSutTypes {

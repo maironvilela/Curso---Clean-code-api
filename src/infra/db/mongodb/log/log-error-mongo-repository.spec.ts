@@ -1,6 +1,6 @@
 import { Collection } from 'mongodb';
 import { MongoHelper } from '../helpers/mongo-helpers';
-import { LogMongoRepository } from './log-error';
+import { LogErrorMongoRepository } from './log-error-mongo-repository';
 
 let errorCollection: Collection;
 
@@ -17,7 +17,7 @@ describe('Log Repository', () => {
   });
 
   it('should create an error log', async () => {
-    const sut = new LogMongoRepository();
+    const sut = new LogErrorMongoRepository();
 
     await sut.log('any_error');
 

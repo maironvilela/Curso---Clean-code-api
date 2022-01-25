@@ -1,38 +1,37 @@
-import { HttpRequest, Authentication, HttpResponse } from './login-protocols';
-
 import {
   badRequest,
   internalServerError,
-  ok,
-  unauthorized,
+  create,
 } from '../../helpers/http-helpers';
 import { Validation } from '../../protocols/Validation';
 
-export class LoginController {
+import {
+  AddAccount,
+  Controllers,
+  HttpRequest,
+  HttpResponse,
+} from './signup-controller-protocols';
+
+export class SignUpController implements Controllers {
   constructor(
-    private readonly authentication: Authentication,
+    private readonly addAccount: AddAccount,
     private readonly validation: Validation,
   ) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {
-      const { email, password } = request.body;
-
+      const { name, email, password } = request.body;
       const error = this.validation.validate(request.body);
+
       if (error) {
         return badRequest(error);
       }
-
-      const authenticationResult = await this.authentication.auth({
+      const account = await this.addAccount.add({
+        name,
         email,
         password,
       });
-
-      if (!authenticationResult) {
-        return unauthorized();
-      }
-
-      return ok(authenticationResult);
+      return create(account);
     } catch (err) {
       return internalServerError(err);
     }

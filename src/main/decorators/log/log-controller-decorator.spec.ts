@@ -1,4 +1,4 @@
-import { LogRepository } from '../../../data/protocols/db/log-repository';
+import { LogRepository } from '../../../data/protocols/db/log/log-repository';
 import { ServerError } from '../../../presentation/error';
 import { internalServerError } from '../../../presentation/helpers/http-helpers';
 import {

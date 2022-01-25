@@ -1,7 +1,7 @@
 import {
   AccountModel,
   AddAccountModel,
-} from '../../usecases/add-account/db-add-account-protocols';
+} from '../../../usecases/add-account/db-add-account-protocols';
 
 /**
 @description Interface que define a implementação das classes responsáveis

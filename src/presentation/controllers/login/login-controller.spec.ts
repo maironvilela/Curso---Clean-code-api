@@ -5,13 +5,13 @@ import {
   unauthorized,
 } from '../../helpers/http-helpers';
 import { Validation } from '../../protocols/Validation';
-import { LoginController } from './';
+import { LoginController } from './login-controller';
 import {
   Authentication,
   AuthenticationProps,
   AuthenticationResult,
   HttpRequest,
-} from './login-protocols';
+} from './login-controller-protocols';
 
 interface SutTypes {
   sut: LoginController;

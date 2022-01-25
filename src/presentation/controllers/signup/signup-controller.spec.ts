@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
 import { ServerError, MissingParamError } from '../../error';
-import { SignUpController } from '.';
+import { SignUpController } from './signup-controller';
 import {
   AddAccount,
   AccountModel,
   AddAccountModel,
   HttpRequest,
-} from './signup-protocols';
+} from './signup-controller-protocols';
 import { Validation } from '../../protocols/Validation';
 
 interface MakeSutTypes {

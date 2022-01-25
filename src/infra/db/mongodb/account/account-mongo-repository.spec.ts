@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-base-to-string */
-import { AccountMongoRepository } from './account';
+import { AccountMongoRepository } from './account-mongo-repository';
 import { MongoHelper } from '../helpers/mongo-helpers';
 import { Collection } from 'mongodb';
 import { hash } from 'bcrypt';
